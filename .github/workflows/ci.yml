@@ -1,0 +1,113 @@
+# CI for the tap: brew style on every run, then brew audit --strict --online, install and test
+# on macOS and Linux for each formula that changed (all formulae on a manual run).
+# No check here is required by the branch ruleset, so release workflows can always push.
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  HOMEBREW_NO_ANALYTICS: 1
+  HOMEBREW_NO_AUTO_UPDATE: 1
+  HOMEBREW_NO_ENV_HINTS: 1
+  HOMEBREW_NO_INSTALL_CLEANUP: 1
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    outputs:
+      formulae: ${{ steps.list.outputs.formulae }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: List changed formulae
+        id: list
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+          HEAD: ${{ github.sha }}
+        run: |
+          if [ "$EVENT" = workflow_dispatch ] || [ -z "$BASE" ] || ! git cat-file -e "$BASE^{commit}" 2>/dev/null; then
+            files=$(git ls-files 'Formula/*.rb')
+          else
+            files=$(git diff --name-only --diff-filter=AM "$BASE" "$HEAD" -- 'Formula/*.rb')
+          fi
+          formulae=$(printf '%s\n' "$files" | sed -n 's|^Formula/\(.*\)\.rb$|\1|p' | jq -Rnc '[inputs | select(length > 0)]')
+          echo "formulae=$formulae" >>"$GITHUB_OUTPUT"
+          echo "Changed formulae: $formulae"
+
+  style:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - name: Set up Homebrew
+        id: brew
+        uses: Homebrew/actions/setup-homebrew@4790763c0a3ba4036f72634dc079c4a7dfcd4878 # 2026.10.19.1
+
+      - name: brew style
+        env:
+          TAP: ${{ steps.brew.outputs.tap-name }}
+        run: brew style "$TAP"
+
+  test:
+    needs: changes
+    if: needs.changes.outputs.formulae != '[]'
+    name: test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, ubuntu-latest]
+    steps:
+      - name: Set up Homebrew
+        id: brew
+        uses: Homebrew/actions/setup-homebrew@4790763c0a3ba4036f72634dc079c4a7dfcd4878 # 2026.10.19.1
+
+      - name: Trust the tap
+        env:
+          TAP: ${{ steps.brew.outputs.tap-name }}
+        run: brew trust --tap "$TAP"
+
+      - name: Audit, install and test
+        env:
+          TAP: ${{ steps.brew.outputs.tap-name }}
+          FORMULAE: ${{ needs.changes.outputs.formulae }}
+        run: |
+          for f in $(jq -r '.[]' <<<"$FORMULAE"); do
+            echo "::group::$TAP/$f"
+            brew audit --strict --online --formula "$TAP/$f"
+            brew install --formula "$TAP/$f"
+            brew test "$TAP/$f"
+            echo "::endgroup::"
+          done
+
+  # One summary check. Nothing requires it; it only makes the result easy to read.
+  ci:
+    needs: [changes, style, test]
+    if: always()
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - name: All jobs passed
+        if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
+        run: exit 1
