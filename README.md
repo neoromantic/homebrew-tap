@@ -37,6 +37,7 @@ brew "neoromantic/tap/<formula>"
 | Formula | What it is | Install |
 |---|---|---|
 | [`ai-usage`](https://github.com/neoromantic/ai-usage) | Quota left and token use for Claude Code, Codex, and Grok, per machine and team | `brew install neoromantic/tap/ai-usage` |
+| [`tg`](https://github.com/neoromantic/telegram-sync-cli) | Telegram CLI with a local cache, a sync daemon and full MTProto API access | `brew install neoromantic/tap/tg` |
 
 What to do after the install is in each tool's README.
 
