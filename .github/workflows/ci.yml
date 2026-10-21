@@ -49,7 +49,10 @@ jobs:
           else
             files=$(git diff --name-only --diff-filter=AM "$BASE" "$HEAD" -- 'Formula/*.rb')
           fi
-          formulae=$(printf '%s\n' "$files" | sed -n 's|^Formula/\(.*\)\.rb$|\1|p' | jq -Rnc '[inputs | select(length > 0)]')
+          # Plain sed and paste, not jq: self-hosted runners need not have it. Formula names
+          # hold no characters that JSON would have to escape.
+          names=$(printf '%s\n' "$files" | sed -n 's|^Formula/\([A-Za-z0-9@._+-]*\)\.rb$|"\1"|p' | paste -sd, -)
+          formulae="[$names]"
           echo "formulae=$formulae" >>"$GITHUB_OUTPUT"
           echo "Changed formulae: $formulae"
 
@@ -94,9 +97,9 @@ jobs:
       - name: Audit, install and test
         env:
           TAP: ${{ steps.brew.outputs.tap-name }}
-          FORMULAE: ${{ needs.changes.outputs.formulae }}
+          FORMULAE: ${{ join(fromJSON(needs.changes.outputs.formulae), ' ') }}
         run: |
-          for f in $(jq -r '.[]' <<<"$FORMULAE"); do
+          for f in $FORMULAE; do
             echo "::group::$TAP/$f"
             brew audit --strict --online --formula "$TAP/$f"
             brew install --formula "$TAP/$f"
