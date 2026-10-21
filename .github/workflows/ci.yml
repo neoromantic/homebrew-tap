@@ -7,13 +7,14 @@ on:
   push:
     branches: [main]
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review, converted_to_draft]
   workflow_dispatch:
 
 permissions: {}
 
 concurrency:
   group: ci-${{ github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  cancel-in-progress: true
 
 env:
   HOMEBREW_NO_ANALYTICS: 1
@@ -23,7 +24,8 @@ env:
 
 jobs:
   changes:
-    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft != true
+    runs-on: ${{ fromJSON('{"true":"oss-linux","false":"ubuntu-latest"}')[format('{0}', vars.CI_SELF_HOSTED == 'true' && github.ref == 'refs/heads/main')] }}
     timeout-minutes: 5
     permissions:
       contents: read
@@ -52,6 +54,7 @@ jobs:
           echo "Changed formulae: $formulae"
 
   style:
+    if: github.event.pull_request.draft != true
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
@@ -101,11 +104,12 @@ jobs:
             echo "::endgroup::"
           done
 
+
   # One summary check. Nothing requires it; it only makes the result easy to read.
   ci:
     needs: [changes, style, test]
-    if: always()
-    runs-on: ubuntu-latest
+    if: always() && github.event.pull_request.draft != true
+    runs-on: ${{ fromJSON('{"true":"oss-linux","false":"ubuntu-latest"}')[format('{0}', vars.CI_SELF_HOSTED == 'true' && github.ref == 'refs/heads/main')] }}
     permissions: {}
     steps:
       - name: All jobs passed
