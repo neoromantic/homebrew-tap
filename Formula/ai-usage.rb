@@ -10,22 +10,22 @@ class AiUsage < Formula
 
   on_macos do
     on_arm do
-      url "https://github.com/neoromantic/ai-usage/releases/download/v0.11.0/ai-usage_darwin_arm64"
-      sha256 "739853fb694d6780c81f2c1bda0c2cc4e2f9811b631ffb96ea3d1018acb01d8a"
+      url "https://github.com/neoromantic/ai-usage/releases/download/v0.12.0/ai-usage_darwin_arm64"
+      sha256 "e185309bfa80db1fc04b60f7f2a605b4028af6f9f434299b83d7b9c67f290de7"
     end
     on_intel do
-      url "https://github.com/neoromantic/ai-usage/releases/download/v0.11.0/ai-usage_darwin_amd64"
-      sha256 "ad40c7f6d559804714f653537e59394270049b5c7ecc0802e1963b7b3d0de38c"
+      url "https://github.com/neoromantic/ai-usage/releases/download/v0.12.0/ai-usage_darwin_amd64"
+      sha256 "40759688b9d34be92d21f1b2b6a0a1a91fb9f7f896822f8433867ca36f880966"
     end
   end
   on_linux do
     on_arm do
-      url "https://github.com/neoromantic/ai-usage/releases/download/v0.11.0/ai-usage_linux_arm64"
-      sha256 "63f71e810b49b221c098fdcbf58274bdf74936460e8141d9ca12d29f81a3f456"
+      url "https://github.com/neoromantic/ai-usage/releases/download/v0.12.0/ai-usage_linux_arm64"
+      sha256 "6713ebef56a59c60640a44d52a9ada1f0392687aca07315da64ae3e615814db3"
     end
     on_intel do
-      url "https://github.com/neoromantic/ai-usage/releases/download/v0.11.0/ai-usage_linux_amd64"
-      sha256 "b38f8edc23ce5278d8b4eaca8c94a9eb7ff43441eced1568f0862126780af72e"
+      url "https://github.com/neoromantic/ai-usage/releases/download/v0.12.0/ai-usage_linux_amd64"
+      sha256 "321e16581e368285bdf9b58fb1b1fa3b93765905a10b757650df28c72429fe5b"
     end
   end
 
@@ -48,8 +48,9 @@ class AiUsage < Formula
         rm ~/.local/bin/ai-usage
       If brew could not link ai-usage over an old copy in its bin folder:
         brew link --overwrite neoromantic/tap/ai-usage
-      Before `brew uninstall`, run `ai-usage schedule remove`; see
-        https://github.com/neoromantic/ai-usage#uninstall
+      To remove it, run `ai-usage uninstall` first, then
+        brew uninstall neoromantic/tap/ai-usage
+      See https://github.com/neoromantic/ai-usage#uninstall
     EOS
   end
 
