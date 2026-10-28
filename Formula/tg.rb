@@ -10,22 +10,22 @@ class Tg < Formula
 
   on_macos do
     on_arm do
-      url "https://github.com/neoromantic/telegram-sync-cli/releases/download/v0.6.0/tg-darwin-arm64"
-      sha256 "e0f5a2dbc23e72f96a3b5297a75a8fbb981c88df0f9f330fc55b5253482f1ad4"
+      url "https://github.com/neoromantic/telegram-sync-cli/releases/download/v0.7.0/tg-darwin-arm64"
+      sha256 "1ee25c2058fa33ef40de054e233b87d34ef1737cf6d6519926e3fb4f62122d98"
     end
     on_intel do
-      url "https://github.com/neoromantic/telegram-sync-cli/releases/download/v0.6.0/tg-darwin-x64"
-      sha256 "706c74069edd05aeb04f5de5079d621788aa4ba612a432141bca1b3551fdc222"
+      url "https://github.com/neoromantic/telegram-sync-cli/releases/download/v0.7.0/tg-darwin-x64"
+      sha256 "e17bc755907d45debf9c687018b3d5aa35175fe48e99cafb88937c7293c16edf"
     end
   end
   on_linux do
     on_arm do
-      url "https://github.com/neoromantic/telegram-sync-cli/releases/download/v0.6.0/tg-linux-arm64"
-      sha256 "d477e4bbed1156f8c6eba7719038b75bb1b0a7387d2a74982c1a6daf241ac63e"
+      url "https://github.com/neoromantic/telegram-sync-cli/releases/download/v0.7.0/tg-linux-arm64"
+      sha256 "ee819a68b9337fec642d890ecb360fc8d188a1db02378114e83f2f1febafca9f"
     end
     on_intel do
-      url "https://github.com/neoromantic/telegram-sync-cli/releases/download/v0.6.0/tg-linux-x64"
-      sha256 "f2e1bfcb2d73de2027442a6aa6d6bd1a047fd727f7b21fd8813fba343bb210fc"
+      url "https://github.com/neoromantic/telegram-sync-cli/releases/download/v0.7.0/tg-linux-x64"
+      sha256 "0268ecd140ad7d6da97c392a37dd1d4004650201a672594bb31ed7a11ae03f12"
     end
   end
 
@@ -33,7 +33,18 @@ class Tg < Formula
     bin.install Dir["tg-*"].first => "tg"
   end
 
+  def caveats
+    <<~EOS
+      tg shares usage stats with its author: how often it runs, which features are used,
+      errors, version and OS, tied to a random install ID. It never sends your files,
+      arguments or account names. Turn it off with "tg telemetry off" or DO_NOT_TRACK=1.
+      Details: https://usage.sergeybaus.com
+    EOS
+  end
+
   test do
+    ENV["TELEGRAM_SYNC_CLI_TELEMETRY"] = "0"
     assert_equal version.to_s, shell_output("#{bin}/tg --version").strip
+    assert_match '"enabled": false', shell_output("#{bin}/tg telemetry status --json")
   end
 end
