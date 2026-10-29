@@ -10,22 +10,22 @@ class AiUsage < Formula
 
   on_macos do
     on_arm do
-      url "https://github.com/neoromantic/ai-usage/releases/download/v0.13.2/ai-usage_darwin_arm64"
-      sha256 "70c7429d9a433fb8f6314b1ce40256a44b4f9e8906cda97509770e6f38b482bf"
+      url "https://github.com/neoromantic/ai-usage/releases/download/v0.13.3/ai-usage_darwin_arm64"
+      sha256 "f68c724b368e9ecb0dfc94ce08dbf5907bd48d56a00b901e1abd6c55b50049cd"
     end
     on_intel do
-      url "https://github.com/neoromantic/ai-usage/releases/download/v0.13.2/ai-usage_darwin_amd64"
-      sha256 "294d011e640a5e40b755b954a9b090a9ca244969da39156f03f19c9ae7fe3827"
+      url "https://github.com/neoromantic/ai-usage/releases/download/v0.13.3/ai-usage_darwin_amd64"
+      sha256 "3052c56917a362bed2f7a65d92d573973bb8e34a70f34a776002f2b08bed8842"
     end
   end
   on_linux do
     on_arm do
-      url "https://github.com/neoromantic/ai-usage/releases/download/v0.13.2/ai-usage_linux_arm64"
-      sha256 "0e4b88062cf38c654de313884640c485231e9abacb1d0b29dba6c9d085180838"
+      url "https://github.com/neoromantic/ai-usage/releases/download/v0.13.3/ai-usage_linux_arm64"
+      sha256 "6e489fbe07d0b5564c75cb7f53b455f431b6e4a9056b8ebeee201bd41db77a12"
     end
     on_intel do
-      url "https://github.com/neoromantic/ai-usage/releases/download/v0.13.2/ai-usage_linux_amd64"
-      sha256 "d62633480d218df11e4b0f0d4e5ee87a28990b9defca5d614769d1bb0ead30ce"
+      url "https://github.com/neoromantic/ai-usage/releases/download/v0.13.3/ai-usage_linux_amd64"
+      sha256 "5c9378a27bb36c53e3902a11d3e638d5aaafbc150c2cc8150f3912a63891e93e"
     end
   end
 
