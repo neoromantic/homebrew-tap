@@ -10,22 +10,22 @@ class Tg < Formula
 
   on_macos do
     on_arm do
-      url "https://github.com/neoromantic/telegram-sync-cli/releases/download/v0.12.0/tg-darwin-arm64"
-      sha256 "6cc5caf61f716ec08100178d786bd1a5bf7f66e201d768207c6456f86f41f8bb"
+      url "https://github.com/neoromantic/telegram-sync-cli/releases/download/v0.12.1/tg-darwin-arm64"
+      sha256 "f1ba86d163488afc0bb176d75670657b6fd4f4e31b2748e06463140d5d2a0434"
     end
     on_intel do
-      url "https://github.com/neoromantic/telegram-sync-cli/releases/download/v0.12.0/tg-darwin-x64"
-      sha256 "a3ff28703c6b319d8e18bbfc94f34a9036378107e086c87de6e4b33c2c042af3"
+      url "https://github.com/neoromantic/telegram-sync-cli/releases/download/v0.12.1/tg-darwin-x64"
+      sha256 "30c1cca8c9320381baf5bbf83f6bcad3bed668b0a4222502f40896487ba446b9"
     end
   end
   on_linux do
     on_arm do
-      url "https://github.com/neoromantic/telegram-sync-cli/releases/download/v0.12.0/tg-linux-arm64"
-      sha256 "653498ca107173706549b9a9f87d7569268de32cf13198232bc18d1ed9662b26"
+      url "https://github.com/neoromantic/telegram-sync-cli/releases/download/v0.12.1/tg-linux-arm64"
+      sha256 "1ab3bb73dd283b850e5cafda84d8123a3df906061de63137f5613eb43282c00c"
     end
     on_intel do
-      url "https://github.com/neoromantic/telegram-sync-cli/releases/download/v0.12.0/tg-linux-x64"
-      sha256 "c324b9ba4dd91bb71ab3530754a2ab35097274793d52f1cdefdba390a3ccee28"
+      url "https://github.com/neoromantic/telegram-sync-cli/releases/download/v0.12.1/tg-linux-x64"
+      sha256 "b761287455abd45d8dd671e07a8ab2f4dd017ad04a3a6f80245e8b61258857e4"
     end
   end
 
